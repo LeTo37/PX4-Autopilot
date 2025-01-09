@@ -546,8 +546,14 @@ bool VehicleIMU::Publish()
 
 	const Vector3f accumulated_coning_corrections = _gyro_integrator.accumulated_coning_corrections();
 
-	if (_accel_integrator.reset(delta_velocity, imu.delta_velocity_dt)
-	    && _gyro_integrator.reset(delta_angle, imu.delta_angle_dt)) {
+	uint32_t delta_vel_dt;
+	uint32_t delta_angle_dt;
+
+	if (_accel_integrator.reset(delta_velocity, delta_vel_dt)
+	    && _gyro_integrator.reset(delta_angle, delta_angle_dt)) {
+
+		imu.delta_velocity_dt = delta_vel_dt;
+		imu.delta_angle_dt = delta_angle_dt;
 
 		if (_accel_calibration.enabled() && _gyro_calibration.enabled()) {
 
